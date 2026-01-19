@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background circle with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D6EFD;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0056D4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Circle background -->
+  <circle cx="50" cy="50" r="48" fill="url(#bgGradient)"/>
+  
+  <!-- Alert/Shield icon -->
+  <path d="M50 15 L70 25 L70 45 Q70 65 50 80 Q30 65 30 45 L30 25 Z" 
+        fill="white" stroke="white" stroke-width="2"/>
+  
+  <!-- Exclamation mark -->
+  <line x1="50" y1="35" x2="50" y2="55" stroke="#0D6EFD" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="50" cy="65" r="3" fill="#0D6EFD"/>
+</svg>
