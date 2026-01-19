@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import Navbar from './components/Navbar';
-import ReportingForm from './components/ReportingForm';
-import LocationMap from './components/LocationMap';
-import ImpactHistory from './components/ImpactHistory';
-import ToastContainer from './components/ToastContainer';
-import { useGeolocation } from './hooks/useGeolocation';
-import { useTheme } from './hooks/useTheme';
+import Navbar from './Navbar';
+import ReportingForm from './ReportingForm';
+import LocationMap from './LocationMap';
+import ImpactHistory from './ImpactHistory';
+import ToastContainer from './ToastContainer';
+import { useGeolocation } from './useGeolocation';
+import { useTheme } from './useTheme';
 
 function App() {
   const { isDarkMode, toggleTheme } = useTheme();
