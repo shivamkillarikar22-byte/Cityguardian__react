@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, Upload, Send, Loader, Image as ImageIcon } from 'lucide-react';
-import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
+import { useSpeechRecognition } from './useSpeechRecognition';
 import axios from 'axios';
-import { generatePDF, saveToHistory } from '../utils/helpers';
+import { generatePDF, saveToHistory } from './helpers';
 
 const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
   const [formData, setFormData] = useState({
