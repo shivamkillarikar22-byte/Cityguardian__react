@@ -79,7 +79,7 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
     }
 
     try {
-      // Use the VITE_API_URL if defined, otherwise fallback to your hardcoded URL
+      // Priority 1: Use Vercel Environment Variable. Priority 2: Use your hardcoded Render URL.
       const apiUrl = import.meta.env.VITE_API_URL || 'https://city-guardian.onrender.com';
       
       const response = await axios.post(
@@ -128,25 +128,23 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
     } catch (error) {
       console.error('Submission error:', error);
       
-      // IMPROVED ERROR HANDLING
       if (error.response) {
         const status = error.response.status;
         const serverData = error.response.data;
 
+        // FastAPI error messages are usually in 'detail'. React apps often use 'message'.
+        // This line checks both to ensure the user sees the real reason (e.g., Non-Civic Image).
+        const errorMessage = serverData.detail || serverData.message || 'An error occurred on the server.';
+
         if (status === 409) {
           addToast('📍 Duplicate: This issue is already being handled', 'warning');
         } else if (status === 400) {
-          // Specifically handles "Non-Civic Image" or validation errors
-          const msg = serverData.message || serverData.detail || 'Image not recognized as a civic issue.';
-          addToast(msg, 'warning');
+          addToast(errorMessage, 'warning'); // Show "Image rejected: Not a civic issue."
         } else {
-          // Handles 500 and other server errors
-          const msg = serverData.message || serverData.detail || 'Server error. Please try again later.';
-          addToast(msg, 'error');
+          addToast(errorMessage, 'error'); // Show general 500 errors
         }
       } else if (error.request) {
-        // Network errors
-        addToast('Network error. Check your connection or backend status.', 'error');
+        addToast('Network error. Please check your connection or backend status.', 'error');
       } else {
         addToast('An unexpected error occurred.', 'error');
       }
@@ -167,11 +165,7 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name Input */}
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-        >
+        <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
           <input
             type="text"
             name="name"
@@ -184,11 +178,7 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
         </motion.div>
 
         {/* Email Input */}
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
+        <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
           <input
             type="email"
             name="email"
@@ -201,11 +191,7 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
         </motion.div>
 
         {/* Complaint Textarea */}
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
+        <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
           <textarea
             name="complaint"
             value={formData.complaint}
@@ -217,12 +203,7 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
         </motion.div>
 
         {/* Voice & Image Inputs */}
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="grid grid-cols-2 gap-3"
-        >
+        <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="grid grid-cols-2 gap-3">
           <motion.button
             type="button"
             onClick={handleVoiceInput}
@@ -230,9 +211,7 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all focus-ring ${
-              isListening
-                ? 'bg-red-500 text-white'
-                : 'glass-input text-gray-700 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-700/50'
+              isListening ? 'bg-red-500 text-white' : 'glass-input text-gray-700 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-700/50'
             } ${!isSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <Mic className={`w-5 h-5 ${isListening ? 'animate-pulse' : ''}`} />
@@ -240,12 +219,7 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
           </motion.button>
 
           <label className="relative cursor-pointer">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
+            <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -266,17 +240,10 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
               exit={{ opacity: 0, scale: 0.9 }}
               className="relative rounded-xl overflow-hidden shadow-lg"
             >
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-full max-h-48 object-cover"
-              />
+              <img src={imagePreview} alt="Preview" className="w-full max-h-48 object-cover" />
               <motion.button
                 type="button"
-                onClick={() => {
-                  setImageFile(null);
-                  setImagePreview(null);
-                }}
+                onClick={() => { setImageFile(null); setImagePreview(null); }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 shadow-lg hover:bg-red-600 transition-colors"
@@ -297,23 +264,11 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
           className={`w-full py-4 rounded-xl font-bold text-white transition-all shadow-lg focus-ring ${
-            isSubmitting
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-gradient-to-r from-electric-blue-500 to-electric-blue-700 hover:from-electric-blue-600 hover:to-electric-blue-800'
+            isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-electric-blue-500 to-electric-blue-700 hover:from-electric-blue-600 hover:to-electric-blue-800'
           }`}
         >
           <span className="flex items-center justify-center gap-2">
-            {isSubmitting ? (
-              <>
-                <Loader className="w-5 h-5 animate-spin" />
-                Processing...
-              </>
-            ) : (
-              <>
-                <Send className="w-5 h-5" />
-                Submit Report
-              </>
-            )}
+            {isSubmitting ? <><Loader className="w-5 h-5 animate-spin" /> Processing...</> : <><Send className="w-5 h-5" /> Submit Report</>}
           </span>
         </motion.button>
       </form>
