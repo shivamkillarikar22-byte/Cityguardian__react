@@ -79,8 +79,11 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
     }
 
     try {
+      // Use the VITE_API_URL if defined, otherwise fallback to your hardcoded URL
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://city-guardian.onrender.com';
+      
       const response = await axios.post(
-        'https://city-guardian.onrender.com/send-report',
+        `${apiUrl}/send-report`,
         submitData,
         {
           headers: {
@@ -125,13 +128,27 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
     } catch (error) {
       console.error('Submission error:', error);
       
-      if (error.response?.status === 409) {
-        addToast('📍 Duplicate: This issue is already being handled', 'warning');
+      // IMPROVED ERROR HANDLING
+      if (error.response) {
+        const status = error.response.status;
+        const serverData = error.response.data;
+
+        if (status === 409) {
+          addToast('📍 Duplicate: This issue is already being handled', 'warning');
+        } else if (status === 400) {
+          // Specifically handles "Non-Civic Image" or validation errors
+          const msg = serverData.message || serverData.detail || 'Image not recognized as a civic issue.';
+          addToast(msg, 'warning');
+        } else {
+          // Handles 500 and other server errors
+          const msg = serverData.message || serverData.detail || 'Server error. Please try again later.';
+          addToast(msg, 'error');
+        }
+      } else if (error.request) {
+        // Network errors
+        addToast('Network error. Check your connection or backend status.', 'error');
       } else {
-        const errorMsg = error.response?.data?.detail || 
-                        error.response?.data?.message || 
-                        'Server error. Please try again later.';
-        addToast(errorMsg, 'error');
+        addToast('An unexpected error occurred.', 'error');
       }
     } finally {
       setIsSubmitting(false);
