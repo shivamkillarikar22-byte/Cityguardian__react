@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { History, AlertTriangle, Calendar } from 'lucide-react';
-import { getHistory } from '../utils/helpers';
+import { getHistory } from './helpers';
 
 const ImpactHistory = ({ refreshTrigger }) => {
   const [history, setHistory] = useState([]);
