@@ -96,8 +96,8 @@ const cleanData = (data) => {
  */
 export const calculateStats = (data) => {
   const total = data.length;
-  const pending = data.filter(r => r.Status === 'Pending').length;
-  const resolved = data.filter(r => r.Status === 'Resolved').length;
+  const pending = data.filter(r => r.Status?.toLowerCase() === 'pending').length;
+  const resolved = data.filter(r => r.Status?.toLowerCase() === 'resolved').length;
   const successRate = total > 0 ? ((resolved / total) * 100).toFixed(1) : 0;
 
   // Category breakdown
@@ -164,3 +164,15 @@ export const prepareHeatmapData = (data) => {
 
   return Object.values(heatmapGrid);
 };
+
+function doGet() {
+  const sheet = SpreadsheetApp.openById('SHEET_ID').getSheetByName('Sheet1');
+  const data = sheet.getDataRange().getValues();
+
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeaders({
+      'Cache-Control': 'no-store',
+    });
+  }
