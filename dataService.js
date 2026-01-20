@@ -164,15 +164,3 @@ export const prepareHeatmapData = (data) => {
 
   return Object.values(heatmapGrid);
 };
-
-function doGet() {
-  const sheet = SpreadsheetApp.openById('SHEET_ID').getSheetByName('Sheet1');
-  const data = sheet.getDataRange().getValues();
-
-  return ContentService
-    .createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders({
-      'Cache-Control': 'no-store',
-    });
-  }
