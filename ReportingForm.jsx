@@ -80,7 +80,7 @@ const ReportingForm = ({ location, addToast, onReportSubmitted }) => {
 
     try {
       const response = await axios.post(
-        'https://city-guardian.onrender.com/send-report',
+        'https://cityguardian-ju87.onrender.com/send-report',
         submitData,
         {
           headers: {
