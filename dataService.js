@@ -13,7 +13,14 @@ export const fetchReportsData = async () => {
     const timestamp = new Date().getTime();
     const sheetUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&timestamp=${timestamp}`;
     
-    const response = await axios.get(sheetUrl);
+   // const response = await axios.get(sheetUrl);
+    const response = await axios.get(sheetUrl, {
+      headers: {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      },
+    });
     
     return new Promise((resolve, reject) => {
       Papa.parse(response.data, {
