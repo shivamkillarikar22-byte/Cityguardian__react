@@ -8,12 +8,12 @@ import {
   RefreshCw,
   Activity
 } from 'lucide-react';
-import StatCard from '../components/dashboard/StatCard';
-import StatusPieChart from '../components/dashboard/StatusPieChart';
-import DepartmentBarChart from '../components/dashboard/DepartmentBarChart';
-import HeatMap from '../components/dashboard/HeatMap';
-import UrgencyTrendsChart from '../components/dashboard/UrgencyTrendsChart';
-import { fetchReportsData, calculateStats } from '../services/dataService';
+import StatCard from './StatCard';
+import StatusPieChart from './StatusPieChart';
+import DepartmentBarChart from './DepartmentBarChart';
+import HeatMap from './HeatMap';
+import UrgencyTrendsChart from './UrgencyTrendsChart';
+import { fetchReportsData, calculateStats } from './dataService';
 
 const Dashboard = ({ isDarkMode }) => {
   const [data, setData] = useState([]);
